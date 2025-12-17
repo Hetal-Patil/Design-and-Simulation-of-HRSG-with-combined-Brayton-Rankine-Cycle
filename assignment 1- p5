@@ -1,0 +1,27 @@
+T1 = 350; 
+T2 = 900; 
+T0 = 298; 
+cp = @(T) 1200 + 0.4*T - 1.2e-4*T.^2; 
+integrand = @(T) cp(T)./T; 
+Delta_s = integral(integrand, T1, T2); 
+integrand_Q = @(T) cp(T); 
+Q = integral(integrand_Q, T1, T2); 
+irreversibility = [0.02 0.10]; 
+Sgen = irreversibility .* Delta_s; 
+Xdest = T0 .* Sgen; 
+fprintf('Entropy change = %.3f\n', Delta_s); 
+fprintf('Heat added q = %.2f\n\n', Q/1000); 
+for i = 1:length(irreversibility) 
+fprintf('Irreversibility = %.0f\n', irreversibility(i)*100); 
+fprintf('Entropy generation = %.4f\n', Sgen(i)); 
+fprintf('Exergy destruction = %.2f\n\n', Xdest(i)); 
+end 
+irr_plot = linspace(0,0.15,200); 
+Sgen_plot = irr_plot .* Delta_s; 
+Xdest_plot = T0 .* Sgen_plot; 
+figure; 
+plot(irr_plot*100, Xdest_plot/1000, 'LineWidth', 2) 
+xlabel('Irreversibility Level (%)') 
+ylabel('Exergy Destruction (kJ/kg)') 
+title('Exergy Destruction vs Irreversibility Level') 
+grid on
